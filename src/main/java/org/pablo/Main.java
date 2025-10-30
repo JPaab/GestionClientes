@@ -135,19 +135,19 @@ public class Main {
         }
 
         System.out.println(ColorANSI.AZUL.pintar("\n Recuerda que si dejas vacio un dato, mantiene el anterior. ;)"));
-        System.out.println("Nuevo nombre (" + usuario.getNombre() + "): ");
+        System.out.println(ColorANSI.AMARILLO.pintar("Nuevo nombre (" + usuario.getNombre() + "): "));
         String nuevoNombre = sc.nextLine();
-        System.out.println("Nuevo apellido (" + usuario.getApellido() + "): ");
+        System.out.println(ColorANSI.AMARILLO.pintar("Nuevo apellido (" + usuario.getApellido() + "): "));
         String nuevoApellido = sc.nextLine();
-        System.out.println("Nuevo sexo (" + usuario.getSexo() + "): ");
+        System.out.println(ColorANSI.AMARILLO.pintar("Nuevo sexo (" + usuario.getSexo() + "): "));
         String nuevoSexo = sc.nextLine();
-        System.out.println("Nueva ciudad (" + usuario.getCiudad() + "): ");
+        System.out.println(ColorANSI.AMARILLO.pintar("Nuevo ciudad (" + usuario.getCiudad() + "): "));
         String nuevoCiudad = sc.nextLine();
-        System.out.println("Nuevo telefono (" + usuario.getTelefono() + "): ");
+        System.out.println(ColorANSI.AMARILLO.pintar("Nuevo telefono (" + usuario.getTelefono() + "): "));
         String nuevoTelefono = sc.nextLine();
-        System.out.println("Nuevo email (" + usuario.getMail() + "): ");
+        System.out.println(ColorANSI.AMARILLO.pintar("Nuevo correo electronico (" + usuario.getMail() + "): "));
         String nuevoMail = sc.nextLine();
-        System.out.println("Nueva fecha de nacimiento (" + usuario.getFechaNacimiento() + "): ");
+        System.out.println(ColorANSI.AMARILLO.pintar("Nuevo fecha de nacimiento (" + usuario.getFechaNacimiento() + "): "));
         String nuevoFechaNacimiento = sc.nextLine();
 
         ClienteController.actualizarCliente(idUsuario, nuevoNombre, nuevoApellido, nuevoSexo, nuevoCiudad, nuevoMail, nuevoTelefono, nuevoFechaNacimiento);
