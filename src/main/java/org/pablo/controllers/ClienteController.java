@@ -78,15 +78,15 @@ public class ClienteController {
             datoCambiado = true;
         }
         if (sexo != null && !sexo.isBlank()) {
-            usuario.setSexo(Cliente.Sexo.valueOf(sexo.trim()));
-            datoCambiado = true;
-        }
-        if (sexo != null && !sexo.isBlank()) {
             try {
                 usuario.setSexo(Cliente.Sexo.valueOf(sexo.trim().toUpperCase()));
                 datoCambiado = true;
             } catch (IllegalArgumentException e) {
                 throw new InformacionVaciaException(ColorANSI.ROJO.pintar("\n Sexo inválido. Usa M, F o X."));
+            }
+            if (ciudad != null && !ciudad.isBlank()) {
+                usuario.setCiudad(ciudad.trim());
+                datoCambiado = true;
             }
         }
         if (mail != null && !mail.isBlank()) {

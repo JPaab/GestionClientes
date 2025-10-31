@@ -15,10 +15,6 @@ public enum ColorANSI {
         this.color = color;
     }
 
-    public String getColor() {
-        return color;
-    }
-
     public String pintar(String texto) {
         return color + texto + RESET.color;
     }
