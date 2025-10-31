@@ -12,14 +12,15 @@ import java.util.Scanner;
 
 public class Main {
     private static final Scanner sc = new Scanner(System.in);
+
     public static void main(String[] args) {
-        System.out.println("Menú de Clientes (Hibernate + JPA)");
 
         while (true) {
             mostrarMenu();
             int opcion = sc.nextInt();
             sc.nextLine(); // Limpiamos el Buffer ( Si el proximo sc.next es "texto" nos daria problemas. )
 
+            // El switch lo manejo con metodos para mantener el orden en el codigo.
             switch (opcion) {
                 case 1:
                     registrarCliente();
@@ -40,15 +41,15 @@ public class Main {
                     eliminarCliente();
                     break;
                 case 0:
-                    System.out.println(ColorANSI.ROJO.pintar("Saliendo..."));
+                    salirMenu();
                     return;
-
                 default:
-                    System.out.println(ColorANSI.ROJO.pintar("Opción no valida."));
+                    System.out.println(ColorANSI.ROJO.pintar("\n Opción no valida."));
             }
         }
     }
 
+    // Implemente el menu, formateado con saltos de lineas, use colores ANSI guardados en un Enum (ColorANSI)
     private static void mostrarMenu() {
         System.out.println(ColorANSI.AMARILLO.pintar("\n ---------------------------------"));
         System.out.println(ColorANSI.AMARILLO.pintar(" MENÚ DE CLIENTE\n"));
@@ -62,7 +63,6 @@ public class Main {
         System.out.println(ColorANSI.AZUL.pintar("\n Elige una de las opciones: "));
     }
 
-    private static final DateTimeFormatter ES = DateTimeFormatter.ofPattern("dd-MM-uuuu");
 
     private static void registrarCliente() {
         System.out.println(ColorANSI.AMARILLO.pintar("Nombre: "));
@@ -70,7 +70,11 @@ public class Main {
         System.out.println(ColorANSI.AMARILLO.pintar("Apellido: "));
         String apellido = sc.nextLine().trim();
         System.out.println(ColorANSI.AMARILLO.pintar("Sexo (M/F/X): "));
-        Cliente.Sexo sexo = Cliente.Sexo.valueOf(sc.nextLine());
+        Cliente.Sexo sexo = parseSexoOrNull(sc.nextLine());
+        if (sexo == null) {
+            System.out.println(ColorANSI.ROJO.pintar("\n Ningun campo puede estar vacio, Intente de nuevo."));
+            return;
+        }
         System.out.println(ColorANSI.AMARILLO.pintar("Ciudad: "));
         String ciudad = sc.nextLine().trim();
         System.out.println(ColorANSI.AMARILLO.pintar("Correo electronico: "));
@@ -78,12 +82,15 @@ public class Main {
         System.out.println(ColorANSI.AMARILLO.pintar("Telefono: "));
         String telefono = sc.nextLine().trim();
         System.out.println(ColorANSI.AMARILLO.pintar("Fecha de nacimiento (DD-MM-YYYY): "));
-        LocalDate fechaNacimiento = LocalDate.parse(sc.nextLine(), ES);
-
+        LocalDate fechaNacimiento = parseFechaOrNull(sc.nextLine());
+        if (fechaNacimiento == null) {
+            System.out.println(ColorANSI.ROJO.pintar("\n Ningun campo puede estar vacio, Intente de nuevo."));
+            return;
+        }
         try {
-        boolean register = ClienteController.registrarCliente(nombre, apellido, sexo, ciudad, mail, telefono, fechaNacimiento);
-        if (register)
-            System.out.println(ColorANSI.VERDE.pintar("\n Usuario registrado correctamente."));
+            boolean register = ClienteController.registrarCliente(nombre, apellido, sexo, ciudad, mail, telefono, fechaNacimiento);
+            if (register)
+                System.out.println(ColorANSI.VERDE.pintar("\n Usuario registrado correctamente."));
         } catch (InformacionVaciaException e) {
             System.out.println(e.getMessage());
         }
@@ -95,7 +102,7 @@ public class Main {
             System.out.println(ColorANSI.ROJO.pintar("\n No hay usuarios registrados."));
         } else {
             for (Cliente cliente : usuario) {
-                System.out.println("--------------------" + cliente);
+                System.out.println("----------✭----------" + cliente);
             }
         }
     }
@@ -117,12 +124,11 @@ public class Main {
         System.out.println(ColorANSI.AZUL.pintar("\n Ciudad a filtrar:"));
         String ciudad = sc.nextLine().trim();
         List<Cliente> usuario = ClienteController.filtrarCiudadCliente(ciudad);
-
         if (usuario.isEmpty()) {
             System.out.println(ColorANSI.ROJO.pintar("\n No se ha encontrado clientes en: " + ciudad.toUpperCase()));
         } else {
             for (Cliente cliente : usuario) {
-                System.out.println(cliente);
+                System.out.println("----------✭----------" + cliente);
             }
         }
     }
@@ -135,8 +141,7 @@ public class Main {
             System.out.println(ColorANSI.ROJO.pintar("\n No existe ningun usuario con el ID: " + idUsuario));
             return;
         }
-
-        System.out.println(ColorANSI.AZUL.pintar("(Pulsa ENTER para dejar guardada la información anterior a la modificación)"));
+        System.out.println(ColorANSI.AZUL.pintar("(Pulsa ENTER para mantener la información anterior a la modificación)"));
         System.out.println(ColorANSI.AMARILLO.pintar("Nuevo nombre (" + usuario.getNombre() + "): "));
         String nuevoNombre = sc.nextLine();
         System.out.println(ColorANSI.AMARILLO.pintar("Nuevo apellido (" + usuario.getApellido() + "): "));
@@ -162,11 +167,40 @@ public class Main {
         System.out.println(ColorANSI.AZUL.pintar("\n ID del usuario a eliminar: "));
         Long idUsuario = Long.parseLong(sc.nextLine().trim());
         boolean eliminado = ClienteController.eliminarCliente(idUsuario);
-
         if (eliminado) {
             System.out.println(ColorANSI.VERDE.pintar("\n Cliente eliminado correctamente."));
         } else {
             System.out.println(ColorANSI.ROJO.pintar("\n No se ha encontrado ningun usuario con el ID: " + idUsuario));
         }
+    }
+
+    private static void salirMenu() {
+        System.out.println(ColorANSI.ROJO.pintar("Saliendo..."));
+    }
+
+    // Esto permite al usuario escribir la fecha de nacimiento en el formato "ES"
+    private static final DateTimeFormatter ES = DateTimeFormatter.ofPattern("dd-MM-uuuu");
+
+
+    // HELPERS (Para volver al Menú principal si los campos de sexo y/o fecha estan vacios).
+    private static LocalDate parseFechaOrNull(String input) {
+        if (input == null || input.isBlank())
+            return null;
+        try {
+            return LocalDate.parse(input.trim(), ES);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    private static Cliente.Sexo parseSexoOrNull(String input) {
+        if (input == null || input.isBlank())
+            return null;
+        return switch (input.trim().toUpperCase()) {
+            case "M" -> Cliente.Sexo.M;
+            case "F" -> Cliente.Sexo.F;
+            case "X" -> Cliente.Sexo.X;
+            default -> null;
+        };
     }
 }

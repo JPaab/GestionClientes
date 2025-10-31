@@ -8,6 +8,9 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "Clientes")
 
+// Cada campo (nombre, apellido etc.) debe ir separado y con @Column aplicado a cada uno.
+// Si aplicamos @Column a multiples campos solo afectara a "nombre", el resto van con valores por defecto.
+
 public class Cliente {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,8 +31,13 @@ public class Cliente {
     @Column(name = "Fecha_Nacimiento", nullable = false, length = 40)
     private LocalDate fechaNacimiento;
 
+    // CONSTRUCTOR'S
+
+    // ¿Un constructor vacio?, necesario para Hibernate ya que necesita hidratar resultados de consultas.
     public Cliente() {
     }
+
+    public enum Sexo {M, F, X}
 
     public Cliente(String nombre, String apellido, Sexo sexo, String ciudad, String mail, String telefono, LocalDate fechaNacimiento) {
         this.nombre = nombre;
@@ -40,28 +48,33 @@ public class Cliente {
         this.telefono = telefono;
         this.fechaNacimiento = fechaNacimiento;
     }
-    public enum Sexo {M, F, X}
 
     // GETTER'S
 
     public String getNombre() {
         return nombre;
     }
+
     public String getApellido() {
         return apellido;
     }
+
     public Sexo getSexo() {
         return sexo;
     }
+
     public String getCiudad() {
         return ciudad;
     }
+
     public String getMail() {
         return mail;
     }
+
     public String getTelefono() {
         return telefono;
     }
+
     public LocalDate getFechaNacimiento() {
         return fechaNacimiento;
     }
@@ -71,21 +84,27 @@ public class Cliente {
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
+
     public void setApellido(String apellido) {
         this.apellido = apellido;
     }
+
     public void setSexo(Sexo sexo) {
         this.sexo = sexo;
     }
+
     public void setCiudad(String ciudad) {
         this.ciudad = ciudad;
     }
+
     public void setMail(String mail) {
         this.mail = mail;
     }
+
     public void setTelefono(String telefono) {
         this.telefono = telefono;
     }
+
     public void setFechaNacimiento(LocalDate fechaNacimiento) {
         this.fechaNacimiento = fechaNacimiento;
     }
@@ -96,9 +115,11 @@ public class Cliente {
     }
 
     // toString
+    // Formateado el toString para que al consultar/listar usuarios mantenga la estetica del menú CLI.
+
     @Override
     public String toString() {
-        return  ColorANSI.AMARILLO.pintar("\n Cliente con ID: ") + id + "\n"
+        return ColorANSI.AMARILLO.pintar("\n Cliente con ID: ") + id + "\n"
                 + " - " + ColorANSI.AZUL.pintar("Nombre: ") + nombre + "\n"
                 + " - " + ColorANSI.AZUL.pintar("Apellido: ") + apellido + "\n"
                 + " - " + ColorANSI.AZUL.pintar("Sexo: ") + sexo + "\n"

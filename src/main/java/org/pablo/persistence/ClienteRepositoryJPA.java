@@ -27,6 +27,7 @@ public class ClienteRepositoryJPA {
         }
     }
 
+    // Para filtrar por ciudad use una condicional y el .setParameter
     public static List<Cliente> filtrarCiudadCliente(String ciudad) {
         if (ciudad == null || ciudad.isBlank())
             return Collections.emptyList();
@@ -43,6 +44,8 @@ public class ClienteRepositoryJPA {
         }
     }
 
+    // Para actualizar debemos usar em.merge y no em.persist como hicimos al registrar el cliente.
+
     public static void actualizarCliente(Cliente usuario) {
         try (EntityManager em = ConfigJPA.getEntityManager()) {
             em.getTransaction().begin();
@@ -52,6 +55,7 @@ public class ClienteRepositoryJPA {
         }
     }
 
+    // Para borrar un cliente usamos em.remove.
     public static boolean eliminarCliente(Long idUsuario) {
         try (EntityManager em = ConfigJPA.getEntityManager()) {
             Cliente usuario = em.find(Cliente.class, idUsuario);
