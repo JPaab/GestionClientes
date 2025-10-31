@@ -1,4 +1,4 @@
-# CRUD de Clientes — Java +17 & Hibernate/JPA (CLI)
+# CRUD de Clientes — Java & Hibernate/JPA (CLI)
 
 Este programa se usa en la consola para manejar clientes con **CRUD** (crear, listar, consultar, filtrar, actualizar y eliminar).
 Usando **JPA (Jakarta Persistence)**, **Hibernate** y **MySQL** para guardar los clientes en la base de datos.
