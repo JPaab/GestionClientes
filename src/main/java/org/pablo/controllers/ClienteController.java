@@ -1,9 +1,15 @@
 package org.pablo.controllers;
 
+
+// Importamos clases de diferentes packages para controlar la logica del progama desde el "Controller"
+
 import org.pablo.entities.Cliente;
-import org.pablo.persistance.ClienteRepositoryJPA;
+import org.pablo.exceptions.InformacionVaciaException;
+import org.pablo.persistence.ClienteRepositoryJPA;
 import org.pablo.utils.ColorANSI;
 
+// Importamos utilidades propias de Java
+import java.time.LocalDate;
 import java.util.List;
 
 public class ClienteController {
@@ -11,20 +17,22 @@ public class ClienteController {
 
     public static boolean registrarCliente(String nombre,
                                            String apellido,
-                                           String sexo,
+                                           Cliente.Sexo sexo,
                                            String ciudad,
                                            String mail,
                                            String telefono,
-                                           String fechaNacimiento) {
+                                           LocalDate fechaNacimiento) {
         if (nombre == null || nombre.isBlank() ||
                 apellido == null || apellido.isBlank() ||
-                sexo == null || sexo.isBlank() ||
+                sexo == null ||
                 ciudad == null || ciudad.isBlank() ||
                 mail == null || mail.isBlank() ||
                 telefono == null || telefono.isBlank() ||
-                fechaNacimiento == null || fechaNacimiento.isBlank()) {
-            System.out.println(ColorANSI.ROJO.pintar("\n Ningun campo puede estar vacio, Intente de nuevo."));
-            return false;
+                fechaNacimiento == null) {
+
+            // Usamos excepcion personalizada llamada "InformacionVaciaException" la cual permite seguir en el programa
+            // Sin que este se rompa por la condicional "If"
+            throw new InformacionVaciaException(ColorANSI.ROJO.pintar("\n Ningun campo puede estar vacio, Intente de nuevo."));
         }
 
         ClienteRepositoryJPA.registrarCliente(new Cliente(nombre, apellido, sexo, ciudad, mail, telefono, fechaNacimiento));
@@ -54,10 +62,6 @@ public class ClienteController {
                                          String fechaNacimiento) {
 
         Cliente usuario = ClienteRepositoryJPA.consultarCliente(idUsuario);
-        if (usuario == null) {
-            System.out.println("Cliente no encontrado por ID");
-            return;
-        }
 
         boolean datoCambiado = false;
         if (nombre != null && !nombre.isBlank()) {
@@ -69,7 +73,7 @@ public class ClienteController {
             datoCambiado = true;
         }
         if (sexo != null && !sexo.isBlank()) {
-            usuario.setSexo(sexo.trim());
+            usuario.setSexo(Cliente.Sexo.valueOf(sexo.trim()));
             datoCambiado = true;
         }
         if (ciudad != null && !ciudad.isBlank()) {
@@ -85,16 +89,15 @@ public class ClienteController {
             datoCambiado = true;
         }
         if (fechaNacimiento != null && !fechaNacimiento.isBlank()) {
-            usuario.setFechaNacimiento(fechaNacimiento.trim());
+            usuario.setFechaNacimiento(LocalDate.parse(fechaNacimiento.trim()));
             datoCambiado = true;
         }
 
-        if (datoCambiado) {
-            ClienteRepositoryJPA.actualizarCliente(usuario);
-            System.out.println(ColorANSI.VERDE.pintar("\n Cliente actualizado."));
-        } else {
-            System.out.println(ColorANSI.ROJO.pintar("\n Ningun campo puede estar vacio, Intente de nuevo."));
+        if (!datoCambiado) {
+            throw new InformacionVaciaException(ColorANSI.ROJO.pintar("\n Ningun campo puede estar vacio, Intente de nuevo."));
         }
+        ClienteRepositoryJPA.actualizarCliente(usuario);
+        System.out.println(ColorANSI.VERDE.pintar("\n Cliente actualizado."));
     }
 
     public static boolean eliminarCliente(Long idUsuario) {

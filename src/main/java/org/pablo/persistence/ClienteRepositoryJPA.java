@@ -1,4 +1,4 @@
-package org.pablo.persistance;
+package org.pablo.persistence;
 
 import jakarta.persistence.EntityManager;
 import org.pablo.entities.Cliente;

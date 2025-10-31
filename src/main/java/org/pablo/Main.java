@@ -2,19 +2,16 @@ package org.pablo;
 
 import org.pablo.controllers.ClienteController;
 import org.pablo.entities.Cliente;
+import org.pablo.exceptions.InformacionVaciaException;
 import org.pablo.utils.ColorANSI;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Scanner;
 
 public class Main {
     private static final Scanner sc = new Scanner(System.in);
-    final static String RESET = "\u001B[0m";
-    final static String ROJO = "\u001B[31m";
-    final static String VERDE = "\u001B[32m";
-    final static String AMARILLO = "\u001B[33m";
-    final static String AZUL = "\u001B[34m";
-
     public static void main(String[] args) {
         System.out.println("Menú de Clientes (Hibernate + JPA)");
 
@@ -43,11 +40,11 @@ public class Main {
                     eliminarCliente();
                     break;
                 case 0:
-                    System.out.println(ROJO + "Saliendo..." + RESET);
+                    System.out.println(ColorANSI.ROJO.pintar("Saliendo..."));
                     return;
 
                 default:
-                    System.out.println(ROJO + "Opción no valida." + RESET);
+                    System.out.println(ColorANSI.ROJO.pintar("Opción no valida."));
             }
         }
     }
@@ -55,23 +52,25 @@ public class Main {
     private static void mostrarMenu() {
         System.out.println(ColorANSI.AMARILLO.pintar("\n ---------------------------------"));
         System.out.println(ColorANSI.AMARILLO.pintar(" MENÚ DE CLIENTE\n"));
-        System.out.println(AZUL + "1" + RESET + " - Registrar usuario.");
-        System.out.println(AZUL + "2" + RESET + " - Listar usuarios.");
-        System.out.println(AZUL + "3" + RESET + " - Consultar usuario por ID.");
-        System.out.println(AZUL + "4" + RESET + " - Filtrar por Ciudad.");
-        System.out.println(AZUL + "5" + RESET + " - Actualizar usuario.");
-        System.out.println(AZUL + "6" + RESET + " - Eliminar usuario.");
-        System.out.println(AZUL + "0" + RESET + " - Salir.");
+        System.out.println(ColorANSI.AZUL.pintar("1" + ColorANSI.RESET.pintar(" - Registrar usuario.")));
+        System.out.println(ColorANSI.AZUL.pintar("2" + ColorANSI.RESET.pintar(" - Listar usuarios.")));
+        System.out.println(ColorANSI.AZUL.pintar("3" + ColorANSI.RESET.pintar(" - Consultar usuario por ID.")));
+        System.out.println(ColorANSI.AZUL.pintar("4" + ColorANSI.RESET.pintar(" - Filtrar por Ciudad.")));
+        System.out.println(ColorANSI.AZUL.pintar("5" + ColorANSI.RESET.pintar(" - Actualizar usuario.")));
+        System.out.println(ColorANSI.AZUL.pintar("6" + ColorANSI.RESET.pintar(" - Eliminar usuario.")));
+        System.out.println(ColorANSI.AZUL.pintar("0" + ColorANSI.RESET.pintar(" - Salir.")));
         System.out.println(ColorANSI.AZUL.pintar("\n Elige una de las opciones: "));
     }
+
+    private static final DateTimeFormatter ES = DateTimeFormatter.ofPattern("dd-MM-uuuu");
 
     private static void registrarCliente() {
         System.out.println(ColorANSI.AMARILLO.pintar("Nombre: "));
         String nombre = sc.nextLine().trim();
         System.out.println(ColorANSI.AMARILLO.pintar("Apellido: "));
         String apellido = sc.nextLine().trim();
-        System.out.println(ColorANSI.AMARILLO.pintar("Sexo (M/F): "));
-        String sexo = sc.nextLine().trim();
+        System.out.println(ColorANSI.AMARILLO.pintar("Sexo (M/F/X): "));
+        Cliente.Sexo sexo = Cliente.Sexo.valueOf(sc.nextLine());
         System.out.println(ColorANSI.AMARILLO.pintar("Ciudad: "));
         String ciudad = sc.nextLine().trim();
         System.out.println(ColorANSI.AMARILLO.pintar("Correo electronico: "));
@@ -79,11 +78,14 @@ public class Main {
         System.out.println(ColorANSI.AMARILLO.pintar("Telefono: "));
         String telefono = sc.nextLine().trim();
         System.out.println(ColorANSI.AMARILLO.pintar("Fecha de nacimiento (DD-MM-YYYY): "));
-        String fechaNacimiento = sc.nextLine().trim();
+        LocalDate fechaNacimiento = LocalDate.parse(sc.nextLine(), ES);
 
+        try {
         boolean register = ClienteController.registrarCliente(nombre, apellido, sexo, ciudad, mail, telefono, fechaNacimiento);
-        if (register) {
+        if (register)
             System.out.println(ColorANSI.VERDE.pintar("\n Usuario registrado correctamente."));
+        } catch (InformacionVaciaException e) {
+            System.out.println(e.getMessage());
         }
     }
 
@@ -134,7 +136,7 @@ public class Main {
             return;
         }
 
-        System.out.println(ColorANSI.AZUL.pintar("\n Recuerda que si dejas vacio un dato, mantiene el anterior. ;)"));
+        System.out.println(ColorANSI.AZUL.pintar("(Pulsa ENTER para dejar guardada la información anterior a la modificación)"));
         System.out.println(ColorANSI.AMARILLO.pintar("Nuevo nombre (" + usuario.getNombre() + "): "));
         String nuevoNombre = sc.nextLine();
         System.out.println(ColorANSI.AMARILLO.pintar("Nuevo apellido (" + usuario.getApellido() + "): "));
@@ -149,8 +151,11 @@ public class Main {
         String nuevoMail = sc.nextLine();
         System.out.println(ColorANSI.AMARILLO.pintar("Nuevo fecha de nacimiento (" + usuario.getFechaNacimiento() + "): "));
         String nuevoFechaNacimiento = sc.nextLine();
-
-        ClienteController.actualizarCliente(idUsuario, nuevoNombre, nuevoApellido, nuevoSexo, nuevoCiudad, nuevoMail, nuevoTelefono, nuevoFechaNacimiento);
+        try {
+            ClienteController.actualizarCliente(idUsuario, nuevoNombre, nuevoApellido, nuevoSexo, nuevoCiudad, nuevoMail, nuevoTelefono, nuevoFechaNacimiento);
+        } catch (InformacionVaciaException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     private static void eliminarCliente() {
