@@ -58,7 +58,7 @@ public class Main {
         System.out.println(AZUL + "1" + RESET + " - Registrar usuario.");
         System.out.println(AZUL + "2" + RESET + " - Listar usuarios.");
         System.out.println(AZUL + "3" + RESET + " - Consultar usuario por ID.");
-        System.out.println(AZUL + "4" + RESET + " - Filtrar usuarios por Ciudad.");
+        System.out.println(AZUL + "4" + RESET + " - Filtrar por Ciudad.");
         System.out.println(AZUL + "5" + RESET + " - Actualizar usuario.");
         System.out.println(AZUL + "6" + RESET + " - Eliminar usuario.");
         System.out.println(AZUL + "0" + RESET + " - Salir.");
