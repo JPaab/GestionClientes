@@ -101,7 +101,7 @@ Archivo: `src/main/resources/META-INF/persistence.xml`
 
 > **Anotaciones:**
 >
-> > * `<persistence-unit name="GestionClientesPU" transaction-type="RESOURCE_LOCAL">` el nombre de la PU debe coincidir con el nombre de la EMF `ConfigJPA`
+> * `<persistence-unit name="GestionClientesPU" transaction-type="RESOURCE_LOCAL">` el nombre de la PU debe coincidir con el nombre de la EMF `ConfigJPA`
 > * `hibernate.show_sql` & `hibernate.format_sql` considera cambiar el valor por "true" para activar los logs en la consola.
 > * `"jdbc:mysql://localhost:3306/clientes?serverTimezone=UTC"` considera cambiar el puerto del localhost al usado en tu PC.
 
