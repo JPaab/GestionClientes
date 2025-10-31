@@ -8,7 +8,7 @@ import java.util.List;
 
 public class ClienteRepositoryJPA {
     public static void registrarCliente(Cliente usuario) {
-        try (EntityManager em = ConfigJPA.getEntityManager();) {
+        try (EntityManager em = ConfigJPA.getEntityManager()) {
             em.getTransaction().begin();
             em.persist(usuario);
             em.getTransaction().commit();
@@ -16,13 +16,13 @@ public class ClienteRepositoryJPA {
     }
 
     public static List<Cliente> listarCliente() {
-        try (EntityManager em = ConfigJPA.getEntityManager();) {
+        try (EntityManager em = ConfigJPA.getEntityManager()) {
             return em.createQuery("SELECT u FROM Cliente u", Cliente.class).getResultList();
         }
     }
 
     public static Cliente consultarCliente(Long idUsuario) {
-        try (EntityManager em = ConfigJPA.getEntityManager();) {
+        try (EntityManager em = ConfigJPA.getEntityManager()) {
             return em.find(Cliente.class, idUsuario);
         }
     }
@@ -44,7 +44,7 @@ public class ClienteRepositoryJPA {
     }
 
     public static void actualizarCliente(Cliente usuario) {
-        try (EntityManager em = ConfigJPA.getEntityManager();) {
+        try (EntityManager em = ConfigJPA.getEntityManager()) {
             em.getTransaction().begin();
             em.merge(usuario);
             em.getTransaction().commit();
@@ -53,7 +53,7 @@ public class ClienteRepositoryJPA {
     }
 
     public static boolean eliminarCliente(Long idUsuario) {
-        try (EntityManager em = ConfigJPA.getEntityManager();) {
+        try (EntityManager em = ConfigJPA.getEntityManager()) {
             Cliente usuario = em.find(Cliente.class, idUsuario);
             if (usuario == null) {
                 return false;
